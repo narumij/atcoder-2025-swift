@@ -2,7 +2,7 @@
 // https://docs.swift.org/swift-book
 
 // ファイル名はmain.swiftである必要があります。
-// Main.swiftでもエントリーポイントは作れますが、挙動が異なります。
+// Main.swiftでもエントリーポイントは作れますが、挙動が異なり提出するとCEとなります。
 // Intelligenceはオフにしましょう。
 
 import AcCollections
