@@ -28,9 +28,12 @@ let package = Package(
     .package(
       url: "https://github.com/brokenhandsio/accelerate-linux",
       revision: "8eda308ea3129130e90e5c01fc437a4c5d2ca278"),
+//    .package(
+//      url: "https://github.com/narumij/swift-ac-library",
+//      branch: "release/AtCoder/2025"),
     .package(
       url: "https://github.com/narumij/swift-ac-library",
-      branch: "release/AtCoder/2025"),
+      branch: "compatible/AtCoder/2025"),
     .package(
       url: "https://github.com/narumij/swift-ac-foundation",
       branch: "release/AtCoder/2025"),

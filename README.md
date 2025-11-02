@@ -33,7 +33,9 @@
 ## 一部更新について
 
 コード補完候補に公開メソッドが表示されない不具合があり、swift-ac-collectionを修正しました。
-この修正を反映し、このバージョンではswift-ac-collectionsとswift-ac-memizeのバージョンがジャッジと一致していません。
+z algorithmの性能が出ていない不具合があり、swift-ac-libraryを修正しました。
+
+この修正を反映し、このバージョンではswift-ac-libraryとswift-ac-collectionsとswift-ac-memizeのバージョンがジャッジと一致していません。
 ジャッジとの完全一致をご希望の場合、tag 1.0.1をご利用ください。
 
 ## その他
