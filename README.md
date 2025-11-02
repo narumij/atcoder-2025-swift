@@ -47,6 +47,43 @@
 
 z_algorithmに移植ミスがあり、性能がでません。
 
+以下で代替してください。
+```swift
+@inlinable
+func z_algorithm<Element>(pointer s: UnsafePointer<Element>, count n: Int) -> [Int]
+where Element: Comparable {
+  if n == 0 { return [] }
+  return [Int](unsafeUninitializedCapacity: n) { z, initializedCount in
+    let z = z.baseAddress!
+    z.initialize(repeating: 0, count: n)
+    initializedCount = n
+    z[0] = 0
+    var i = 1
+    var j = 0
+    while i < n {
+      defer { i += 1 }
+      z[i] = j + z[j] <= i ? 0 : min(j + z[j] - i, z[i - j])
+      while i + z[i] < n, s[z[i]] == s[i + z[i]] { z[i] += 1 }
+      if j + z[j] < i + z[i] { j = i }
+    }
+    z[0] = n
+  }
+}
+
+@inlinable
+public func z_algorithm<C>(_ s: [C]) -> [Int]
+where C: Comparable {
+  z_algorithm(pointer: s, count: s.count)
+}
+
+@inlinable
+public func z_algorithm(_ s: String) -> [Int] {
+  s.withCString(encodedAs: Unicode.ASCII.self) {
+    z_algorithm(pointer: $0, count: s.count)
+  }
+}
+```
+
 ## ライセンス
 
 CC0-1.0
