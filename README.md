@@ -86,6 +86,10 @@ public func z_algorithm(_ s: String) -> [Int] {
 }
 ```
 
+- AcFoundationまたはIOReaderを利用すると、Errorの定義が差し替わる
+
+本来のErrorを利用する場合、Swift.Errorと記述してください。
+
 ## ライセンス
 
 CC0-1.0
