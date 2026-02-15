@@ -104,6 +104,14 @@ public func z_algorithm(_ s: String) -> [Int] {
 メソッドでは`.stdin`系統と`.read()`系統が最終的に内部の可変バッファにアクセスしており、影響します。
 それ以外のメソッド（`.readLine()`系統など）では可変バッファアクセスは利用していないので迂回策に利用可能です。
 
+- RedBlackTreeのElement,Key,Valueに参照型を用いるとメモリリークする
+
+参照型は用いず、値型をご利用ください。
+
+- RedBlackTreeの`formIndex(_:offsetBy:limitedBy)`がlimitを越える操作した際にlimitを代入しない
+
+limitを越えた失敗かどうか判別する方法がありません。申し訳ございません。
+
 ## ライセンス
 
 CC0-1.0
