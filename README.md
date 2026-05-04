@@ -1,23 +1,25 @@
 # atcoder-2025-swift
 
-[2024-25年度AtCoder言語アップデート](https://atcoder.jp/posts/1342)に対応した実行形式のSwift Packageです。
+English | [日本語](README.ja.md)
 
-## 動作環境
+A Swift executable package compatible with the [AtCoder Language Update 2024–25](https://atcoder.jp/posts/1342).
 
-- macOS 26以降
-- Xcode 26.0以降
+## Requirements
 
-## 変更点
+- macOS 26 or later  
+- Xcode 26.0 or later  
 
-言語のバージョンを更新しました。
+## Changes
+
+Updated language version:
 - 6.2
 
-ライブラリを更新しました。
+Updated libraries:
 - swift-collections
 - swift-algorithm
 - swift-numerics
 
-ライブラリを追加しました。
+Added libraries:
 - BigInt
 - swift-bignum
 - kvSIMD
@@ -27,29 +29,33 @@
 - swift-ac-foundation
 - swift-ac-memoize
 
-ジャッジ定義として以下を追加しました
+Added judge definition:
 - ONLINE_JUDGE
 
-## 一部更新について
+## About Partial Updates
 
-コード補完候補に公開メソッドが表示されない不具合があり、swift-ac-collectionを修正しました。
-z algorithmの性能が出ていない不具合があり、swift-ac-libraryを修正しました。
+There was an issue where public methods did not appear in code completion, so `swift-ac-collections` was fixed.  
+There was also a performance issue with the Z algorithm, so `swift-ac-library` was fixed.
 
-この修正を反映し、このバージョンではswift-ac-libraryとswift-ac-collectionsとswift-ac-memizeのバージョンがジャッジと一致していません。
-ジャッジとの完全一致をご希望の場合、tag 1.0.1をご利用ください。
+Because of these fixes, the versions of `swift-ac-library`, `swift-ac-collections`, and `swift-ac-memoize` in this package do not match the judge environment.
 
-## その他
+If you need exact compatibility with the judge, please use tag `1.0.1`.
 
-- どうぞご自由にお使いください。
-- ライブラリのバージョンは固定されています。
-- XcodeやSwiftのバージョンアップに伴う差分にAtCoder側は追従しません。各々で注意してご利用ください。
-- LinuxやWindowsでも利用可能だとは思いますが試していません
+## Notes
 
-## 既知の不具合
+- Feel free to use this package.
+- Library versions are fixed.
+- AtCoder does not follow differences caused by Xcode or Swift updates. Use at your own risk.
+- It may work on Linux or Windows, but it has not been tested.
 
-z_algorithmに移植ミスがあり、性能がでません。
+## Known Issues
 
-以下で代替してください。
+### Z Algorithm Performance Issue
+
+There is a porting mistake in `z_algorithm`, resulting in poor performance.
+
+Please use the following implementation instead:
+
 ```swift
 @inlinable
 func z_algorithm<Element>(pointer s: UnsafePointer<Element>, count n: Int) -> [Int]
@@ -86,32 +92,62 @@ public func z_algorithm(_ s: String) -> [Int] {
 }
 ```
 
-- AcFoundationまたはIOReaderを利用すると、Errorの定義が差し替わる
+---
 
-本来のErrorを利用する場合、Swift.Errorと記述してください。
+### Error Type Replacement
 
-- IOReaderの文字列利用でMLEとなる場合がある
+When using `AcFoundation` or `IOReader`, the `Error` type is overridden.
 
-これは、可変長の内部のバッファを開放しない設計及び実装に問題があるためです。申し訳ございません。
-[MLE例](https://atcoder.jp/contests/abc324/submissions/71894548)
-[迂回例](https://atcoder.jp/contests/abc324/submissions/71897651)
+If you need the original one, explicitly use:
 
-読み込む文字列のサイズ以上のバッファを常に保持している形になっており、一度に大きな文字列を読むことでその倍以上のメモリ使用量となります。
+```swift
+Swift.Error
+```
 
-具体的には`String`と`[Character]`と`[UInt8]`に影響があります。
-それ以外では可変長バッファを利用していないため影響しません。
+---
 
-メソッドでは`.stdin`系統と`.read()`系統が最終的に内部の可変バッファにアクセスしており、影響します。
-それ以外のメソッド（`.readLine()`系統など）では可変バッファアクセスは利用していないので迂回策に利用可能です。
+### MLE When Using IOReader with Strings
 
-- RedBlackTreeのElement,Key,Valueに参照型を用いるとメモリリークする
+This occurs because the internal variable-length buffer is not released.
 
-参照型は用いず、値型をご利用ください。
+Example:
+- MLE case: https://atcoder.jp/contests/abc324/submissions/71894548  
+- Workaround: https://atcoder.jp/contests/abc324/submissions/71897651  
 
-- RedBlackTreeの`formIndex(_:offsetBy:limitedBy)`がlimitを越える操作した際にlimitを代入しない
+The implementation keeps a buffer at least as large as the largest string read, which may result in more than double the memory usage.
 
-limitを越えた失敗かどうか判別する方法がありません。申し訳ございません。
+Affected types:
+- `String`
+- `[Character]`
+- `[UInt8]`
 
-## ライセンス
+Other types are not affected because they do not use variable-length buffers.
+
+Affected methods:
+- `.stdin` family
+- `.read()` family
+
+Workaround:
+- Use `.readLine()` family methods, which do not use the internal buffer.
+
+---
+
+### Memory Leak with Reference Types in RedBlackTree
+
+Using reference types as `Element`, `Key`, or `Value` may cause memory leaks.
+
+Use value types instead.
+
+---
+
+### `formIndex(_:offsetBy:limitedBy)` Bug
+
+When exceeding the limit, the limit is not assigned.
+
+There is currently no way to detect whether the operation failed due to exceeding the limit.
+
+---
+
+## License
 
 CC0-1.0
