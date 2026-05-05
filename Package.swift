@@ -31,18 +31,21 @@ let package = Package(
 //    .package(
 //      url: "https://github.com/narumij/swift-ac-library",
 //      branch: "release/AtCoder/2025"),
-    .package(
-      url: "https://github.com/narumij/swift-ac-library",
-      branch: "compatible/AtCoder/2025"),
-    .package(
-      url: "https://github.com/narumij/swift-ac-foundation",
-      branch: "release/AtCoder/2025"),
+//    .package(
+//      url: "https://github.com/narumij/swift-ac-foundation",
+//      branch: "release/AtCoder/2025"),
 //    .package(
 //      url: "https://github.com/narumij/swift-ac-collections",
 //      branch: "release/AtCoder/2025"),
 //    .package(
 //      url: "https://github.com/narumij/swift-ac-memoize",
 //      branch: "release/AtCoder/2025"),
+      .package(
+        url: "https://github.com/narumij/swift-ac-library",
+        branch: "compatible/AtCoder/2025"),
+      .package(
+        url: "https://github.com/narumij/swift-ac-foundation",
+        branch: "compatible/AtCoder/2025"),
       .package(
         url: "https://github.com/narumij/swift-ac-collections",
         branch: "compatible/AtCoder/2025"),
