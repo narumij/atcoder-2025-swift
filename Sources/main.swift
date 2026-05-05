@@ -1,5 +1,10 @@
+// The file name must be "main.swift".
 // ファイル名はmain.swiftである必要があります。
+
+// You can create an entry point with "Main.swift", but the behavior differs and will cause CE on submission.
 // Main.swiftでもエントリーポイントは作れますが、挙動が異なり提出するとCEとなります。
+
+// Turn off Intelligence features.
 // Intelligenceはオフにしましょう。
 
 import AcCollections
@@ -28,14 +33,19 @@ import simd
 #endif
 
 #if ONLINE_JUDGE
+  // This branch is enabled when submitting to AtCoder.
   // 提出時こちらが有効になります
   print("Hello, AtCoder!")
 #else
+  // This branch is disabled when submitting to AtCoder.
   // 提出時こちらが無効になります
   print("Hello, world!")
 #endif
 
 #if false
+  // The z_algorithm bundled in the new judge has an issue and is slow.
+  // Please use the implementation below instead.
+
   // 新ジャッジ搭載のz_algorithmには不備があり性能がでません。代わりに以下をご利用ください。
   @inlinable
   func z_algorithm<Element>(pointer s: UnsafePointer<Element>, count n: Int) -> [Int]
