@@ -9,16 +9,16 @@
 
 import AcCollections
 import AcFoundation
-import AcMemoize
+//import AcMemoize
 import Algorithms
-import AtCoder
+@preconcurrency import AtCoder
 import BigInt
 import BigNum
 //import CharacterUtil
 import Collections
 //import Convenience
 //import CxxWrapped
-import Foundation
+@preconcurrency import Foundation
 //import IOUtil
 //import MT19937
 import Numerics
@@ -39,7 +39,7 @@ import simd
 #else
   // This branch is disabled when submitting to AtCoder.
   // 提出時こちらが無効になります
-  print("Hello, world!")
+  print("Hello, local!")
 #endif
 
 #if false

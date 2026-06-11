@@ -1,5 +1,7 @@
 # atcoder-2025-swift
 
+[English](README.md) | 日本語
+
 [2024-25年度AtCoder言語アップデート](https://atcoder.jp/posts/1342)に対応した実行形式のSwift Packageです。
 
 ## 動作環境
@@ -111,6 +113,35 @@ public func z_algorithm(_ s: String) -> [Int] {
 - RedBlackTreeの`formIndex(_:offsetBy:limitedBy)`がlimitを越える操作した際にlimitを代入しない
 
 limitを越えた失敗かどうか判別する方法がありません。申し訳ございません。
+
+- swift-ac-libraryのSwift Concurrency対応が不十分
+
+`@preconcurrency`や`nonisolated(unafe)`を付与してご利用ください。
+`@MainActor`では不十分な場合もございますので、ご注意ください。
+
+最近のXcode環境とジャッジ環境でここら辺の挙動に差異があります。
+データ構造等については、事前にAtCoderのコードテスト等でコンパイルの確認をされることをおすすめします。
+
+
+```swift
+@preconcurrency import AtCoder
+```
+
+- Xcodeと6.2.0 ツールチェーンの組み合わせでマクロのコンパイルが通らない
+
+パッケージから以下の二つを取り除いてください。コメントアウトでも構いません。
+
+```swift
+      .package(
+        url: "https://github.com/narumij/swift-ac-memoize",
+        from: "0.2.0"),
+```
+
+```swift
+        .product(name: "AcMemoize", package: "swift-ac-memoize"),
+```
+
+6.2.0以外のツールチェーンでも問題が生じる可能性があります。同様にご対処ください。
 
 ## ライセンス
 
