@@ -76,11 +76,6 @@ print("Hello, world!")
 View>Debug Area>Activate Consoleでコンソールを表示しましょう。
 Product>Runとするか、コマンド+Rキーを押して実行してみましょう。
 
-ソース
-```swift
-print("Hello, world!")
-```
-
 期待されるコンソール出力は以下です。少し待つかもしれませんが、これが表示されたら成功です！
 
 ```
@@ -230,11 +225,15 @@ print([1, 2, 3, 4]) // -> [1, 2, 3, 4]
 ```
 AtCoderではSwiftの配列リテラルを出力結果として受け付けてくれないため、異なる出力方法が必要になります。
 
+print関数では無く、printメソッドを利用します。
+(将来、import Convenienceではなく、import AcFoundationになります。)
+
 ```swift
 import Convenience
 [1, 2, 3 ,4].print() // -> 1 2 3 4
 ```
-(将来、import Convenienceではなく、import AcFoundationになります。)
+
+空白で区切られた数字の並びが出力されるようになりました。
 
 ## 複数数列や複数文字列の出力
 (注：将来こうなるという内容です。)
