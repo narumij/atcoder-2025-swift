@@ -143,6 +143,18 @@ limitを越えた失敗かどうか判別する方法がありません。申し
 
 6.2.0以外のツールチェーンでも問題が生じる可能性があります。同様にご対処ください。
 
+- SIMD2, SIMD3, SIMD4のstdinメソッドが利用できない
+
+プロトコル適合の為のメソッドの用意はありますが、SingleReadable適合が漏れていてstdinプロパティの利用ができません。
+ご利用の際は、以下をソースコードに追加してください。
+
+```swift
+extension SIMD2: SingleReadable { }
+extension SIMD3: SingleReadable { }
+extension SIMD4: SingleReadable { }
+```
+
+
 ## ライセンス
 
 CC0-1.0
