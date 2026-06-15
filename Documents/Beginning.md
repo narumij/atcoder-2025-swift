@@ -256,3 +256,7 @@ import Convenience
 ####
 ####
 ```
+
+## まとめ
+
+stdinとprintを覚えるだけで、競技プログラミングのAtCoderにSwiftで取り組む基礎の基礎が身につきます。
