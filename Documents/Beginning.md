@@ -42,7 +42,7 @@ func print(
 )
 ```
 
-これは簡単にまとめると、
+これは簡単にまとめると`print(...)`関数とは命令の一種で、
 
 - 複数の値をまとめて出力できる
 - 値の間には空白が入る
@@ -57,9 +57,9 @@ func print(
 print("Hello, world!", separator: " ", terminator: "\n")
 ```
 
-`separator: " ", terminator: "\n"`が隠れていたわけです。
+`separator: " ", terminator: "\n"`が隠れていたわけです。これをデフォルト引数といいます。
 
-`"Hello, world!"`や`" "`や`"\n"`は文字列リテラルと呼ばれます。
+`"Hello, world!"`や`" "`や`"\n"`は文字列リテラルといいます。
 リテラルとは、文字列や値を直接プログラムに記述する形式のことです。
 他にも、数値リテラル、配列リテラル、辞書リテラルなどがあります。
 
@@ -135,10 +135,29 @@ print(String.stdin)
 Xcodeの場合は実行してからコンソールに好きな文字を入力して改行
 コードテストの場合は標準入力に好きな文字を入力してから実行
 
-importがでてきました。これは雑に説明すると、機能を付け足すということです。
+```swift
+import AcFoundation
+```
+この部分は雑に説明すると、機能を付け足すということです。
+
+```swift
+print(String.stdin)
+//     ^--この部分
+```
 Stringが出てきました。これは種類を表していて文字列です。
+
+```swift
+print(String.stdin)
+//     　　　　　^--この部分
+```
 .stdinが出てきました。これはimportで付け足されたもので、入力を一個受け取ります。
+
+```swift
+print(String.stdin)
+//    ^--この範囲-^
+```
 String.stdinで文字列を一個受け取るという意味になります。
+ちなみに`//`はコメントといい、これ以後をプログラムとしては無視するものです。
 
 こちらも試してみましょう。
 
@@ -149,7 +168,17 @@ print(Int.stdin)
 
 好きな数字を入力にして試してください。
 
+```swift
+print(Int.stdin)
+//    ^--この部分
+```
 Intが出てきました。これは種類を表していて整数です。
+
+```swift
+print(Int.stdin)
+//    ^-------^
+//     この範囲
+```
 Int.stdinで整数を一個受け取るという意味になります。
 
 これらを使って少し進めます。
@@ -157,14 +186,17 @@ Int.stdinで整数を一個受け取るという意味になります。
 ```swift
 import AcFoundation
 let a = Int.stdin
-print(1, "test")
+print(6, "test")
 ```
 
+```swift
+let a = Int.stdin
+//^--この部分
+```
 letが出てきました。これは値に名前を付けるためのものです。
 一度値を入れたら変更できないという特徴もあります。
 
 つまり以下の一文は、入力から一個取り出した整数を変更不可能なaという名前で用意するという意味です。
-
 ```swift
 let a = Int.stdin
 ```
@@ -176,7 +208,7 @@ let a = Int.stdin
 let b = Int.stdin
 let c = Int.stdin
 let s = String.stdin
-print(1, "test")
+print(6, "test")
 ```
 
 a+b+cを計算するよう修正します
