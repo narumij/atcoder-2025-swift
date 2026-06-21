@@ -154,6 +154,21 @@ extension SIMD3: SingleReadable { }
 extension SIMD4: SingleReadable { }
 ```
 
+- トップレベルベタ書きが遅い
+
+6.2からトップレベルに提出内容を直接記述した場合に遅くなる現象が見られます。
+
+[遅い例](https://atcoder.jp/contests/abc325/submissions/76863120)、[速い例](https://atcoder.jp/contests/abc325/submissions/76863120)
+
+このため、以下の形式での提出を推奨いたします。
+
+```swift
+import AcFoundation
+func main() {
+  // 提出内容
+}
+main()
+```
 
 ## ライセンス
 

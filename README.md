@@ -2,7 +2,7 @@
 
 English | [日本語](README.ja.md)
 
-An executable Swift Package compatible with the [AtCoder Language Update for 2024–2025](https://atcoder.jp/posts/1342).
+An executable Swift Package compatible with the [AtCoder Language Update for 2024-2025](https://atcoder.jp/posts/1342).
 
 ## Requirements
 
@@ -12,17 +12,14 @@ An executable Swift Package compatible with the [AtCoder Language Update for 202
 ## Changes
 
 Updated the Swift language version:
-
 - 6.2
 
 Updated the following libraries:
-
 - swift-collections
 - swift-algorithm
 - swift-numerics
 
 Added the following libraries:
-
 - BigInt
 - swift-bignum
 - kvSIMD
@@ -33,114 +30,145 @@ Added the following libraries:
 - swift-ac-memoize
 
 Added the following judge definition:
-
 - ONLINE_JUDGE
 
 ## About Some Updates
 
-A bug in `swift-ac-collections` prevented public methods from appearing in code completion suggestions. This has been fixed.
+A bug in swift-ac-collections prevented public methods from appearing in code completion suggestions, so swift-ac-collections has been fixed.
+A performance issue in z_algorithm was found, so swift-ac-library has been fixed.
 
-A performance issue in the Z Algorithm implementation was found in `swift-ac-library`. This has also been fixed.
-
-Because these fixes have been applied, the versions of `swift-ac-library`, `swift-ac-collections`, and `swift-ac-memoize` included in this package do not exactly match the versions used by the AtCoder judge environment.
-
-If you require complete version parity with the judge environment, please use tag `1.0.1`.
+Because these fixes have been applied, the versions of swift-ac-library, swift-ac-collections, and swift-ac-memoize in this package do not match the judge environment.
+If you need complete parity with the judge environment, please use tag 1.0.1.
 
 ## Notes
 
 - Feel free to use this package however you like.
 - Library versions are pinned.
-- AtCoder does not track differences introduced by newer versions of Xcode or Swift. Please use them with care.
+- AtCoder does not track differences introduced by Xcode or Swift version updates. Please use them with care.
 - It should work on Linux and Windows as well, but this has not been tested.
 
 ## Known Issues
 
-### Poor Performance in `z_algorithm`
-
-A porting mistake exists in `z_algorithm`, causing it to perform poorly.
+A porting mistake exists in z_algorithm, causing poor performance.
 
 Please use the following implementation as a workaround:
-
 ```swift
-...
+@inlinable
+func z_algorithm<Element>(pointer s: UnsafePointer<Element>, count n: Int) -> [Int]
+where Element: Comparable {
+  if n == 0 { return [] }
+  return [Int](unsafeUninitializedCapacity: n) { z, initializedCount in
+    let z = z.baseAddress!
+    z.initialize(repeating: 0, count: n)
+    initializedCount = n
+    z[0] = 0
+    var i = 1
+    var j = 0
+    while i < n {
+      defer { i += 1 }
+      z[i] = j + z[j] <= i ? 0 : min(j + z[j] - i, z[i - j])
+      while i + z[i] < n, s[z[i]] == s[i + z[i]] { z[i] += 1 }
+      if j + z[j] < i + z[i] { j = i }
+    }
+    z[0] = n
+  }
+}
+
+@inlinable
+public func z_algorithm<C>(_ s: [C]) -> [Int]
+where C: Comparable {
+  z_algorithm(pointer: s, count: s.count)
+}
+
+@inlinable
+public func z_algorithm(_ s: String) -> [Int] {
+  s.withCString(encodedAs: Unicode.ASCII.self) {
+    z_algorithm(pointer: $0, count: s.count)
+  }
+}
 ```
 
-### `Error` Is Shadowed When Using AcFoundation or IOReader
+- Importing AcFoundation or IOReader replaces the definition of Error
 
-When importing AcFoundation or IOReader, the standard `Error` definition is replaced.
+If you need the original Error, write Swift.Error explicitly.
 
-If you need the original Swift error type, explicitly use:
-
-```swift
-Swift.Error
-```
-
-### IOReader May Cause MLE When Reading Strings
+- IOReader may cause MLE when reading strings
 
 This is caused by a design and implementation issue where an internal variable-length buffer is never released. Sorry about that.
+[MLE example](https://atcoder.jp/contests/abc324/submissions/71894548)
+[Workaround example](https://atcoder.jp/contests/abc324/submissions/71897651)
 
-- MLE example: https://atcoder.jp/contests/abc324/submissions/71894548
-- Workaround example: https://atcoder.jp/contests/abc324/submissions/71897651
+The reader always retains a buffer at least as large as the string size it has read. Reading a large string at once can therefore use more than twice as much memory as the input itself.
 
-The reader always retains a buffer at least as large as the largest string it has read. As a result, reading a large string at once may consume significantly more memory than the size of the input itself.
-
-Specifically, this affects:
-
-- `String`
-- `[Character]`
-- `[UInt8]`
-
+Specifically, this affects `String`, `[Character]`, and `[UInt8]`.
 Other types are unaffected because they do not use the variable-length buffer.
 
-Methods in the `.stdin` and `.read()` families eventually access this internal buffer and are therefore affected.
+Methods in the `.stdin` and `.read()` families eventually access this internal variable-length buffer and are therefore affected.
+Other methods, such as the `.readLine()` family, do not use variable-length buffer access and can be used as a workaround.
 
-Other methods, such as `.readLine()` and related APIs, do not use the variable-length buffer and can be used as a workaround.
+- Using reference types as RedBlackTree Element, Key, or Value causes memory leaks
 
-### Memory Leak When Using Reference Types in RedBlackTree
+Please use value types instead of reference types.
 
-Using reference types as `Element`, `Key`, or `Value` in RedBlackTree causes memory leaks.
+- RedBlackTree's `formIndex(_:offsetBy:limitedBy)` does not assign limit when an operation moves beyond limit
 
-Please use value types instead.
+There is no way to determine whether the operation failed because it exceeded limit. Sorry about that.
 
-### `formIndex(_:offsetBy:limitedBy:)` Does Not Assign `limit` on Failure
+- Swift Concurrency support in swift-ac-library is insufficient
 
-When `RedBlackTree.formIndex(_:offsetBy:limitedBy:)` attempts to move beyond the specified limit, it does not assign the limit value.
+Please use annotations such as `@preconcurrency` or `nonisolated(unafe)` as needed.
+`@MainActor` alone may not be sufficient, so please be careful.
 
-Unfortunately, there is currently no way to determine whether the operation failed because the limit was exceeded. Sorry about that.
+There are behavioral differences in this area between recent Xcode environments and the judge environment.
+For data structures and similar components, it is recommended to verify compilation in AtCoder Code Test before submitting.
 
-### Incomplete Swift Concurrency Support in swift-ac-library
-
-Swift Concurrency support in `swift-ac-library` is not yet sufficient.
-
-Please use annotations such as `@preconcurrency` or `nonisolated(unsafe)` as needed.
-
-`@MainActor` alone may not always be sufficient.
-
-There are also behavioral differences between recent Xcode environments and the AtCoder judge environment in this area.
-
-For data structures and other concurrency-sensitive components, it is recommended to verify that your code compiles successfully using AtCoder's Code Test feature before submitting.
 
 ```swift
 @preconcurrency import AtCoder
 ```
 
-### Macros Fail to Compile with Xcode + Swift 6.2.0 Toolchain
+- Macros do not compile with the combination of Xcode and the 6.2.0 toolchain
 
-If you encounter macro compilation errors when using Xcode together with the Swift 6.2.0 toolchain, remove the following package dependency (commenting it out is also fine):
-
-```swift
-.package(
-  url: "https://github.com/narumij/swift-ac-memoize",
-  from: "0.2.0"),
-```
-
-And also remove:
+Remove the following two entries from the package. Commenting them out is also fine.
 
 ```swift
-.product(name: "AcMemoize", package: "swift-ac-memoize"),
+      .package(
+        url: "https://github.com/narumij/swift-ac-memoize",
+        from: "0.2.0"),
 ```
 
-Similar issues may occur with toolchains other than 6.2.0. If so, apply the same workaround.
+```swift
+        .product(name: "AcMemoize", package: "swift-ac-memoize"),
+```
+
+The same issue may occur with toolchains other than 6.2.0. If so, apply the same workaround.
+
+- The stdin methods for SIMD2, SIMD3, and SIMD4 are unavailable
+
+Methods required for protocol conformance are provided, but SingleReadable conformance is missing, so the stdin property cannot be used.
+When using them, add the following to your source code:
+
+```swift
+extension SIMD2: SingleReadable { }
+extension SIMD3: SingleReadable { }
+extension SIMD4: SingleReadable { }
+```
+
+- Writing everything directly at the top level is slow
+
+Starting with 6.2, submissions that write the submitted code directly at the top level appear to become slow.
+
+[Slow example](https://atcoder.jp/contests/abc325/submissions/76863120), [fast example](https://atcoder.jp/contests/abc325/submissions/76863120)
+
+For this reason, submitting in the following form is recommended.
+
+```swift
+import AcFoundation
+func main() {
+  // Submission code
+}
+main()
+```
 
 ## License
 
